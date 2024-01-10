@@ -2,12 +2,12 @@ import alpaca_trade_api as alpaca
 import requests
 import asyncio
 
-HEADERS = {'APCA-API-KEY-ID': API_KEY,
-           'APCA-API-SECRET-KEY': SECRET_KEY}
+HEADERS = {'APCA-API-KEY-ID': 'AKYMZMYECGXN0O0RQGZ6',
+           'APCA-API-SECRET-KEY': 'ZiVOJ4k3u2NSiKF5BSl3R86UOJ65XdlEr1Wcl5pl'}
 
 ALPACA_BASE_URL = 'https://paper-api.alpaca.markets'
 DATA_URL = 'https://data.alpaca.markets'
-rest_api = alpaca.REST(API_KEY, SECRET_KEY, ALPACA_BASE_URL)
+rest_api = alpaca.REST('AKYMZMYECGXN0O0RQGZ6', 'ZiVOJ4k3u2NSiKF5BSl3R86UOJ65XdlEr1Wcl5pl', ALPACA_BASE_URL)
 
 
 waitTime = 3
@@ -31,8 +31,8 @@ async def get_quote(symbol: str):
                 '{0}/v1beta2/crypto/latest/trades?symbols={1}'.format(DATA_URL, symbol), headers=HEADERS)
             prices[symbol] = quote.json()['trades'][symbol]['p']
         # Status code 200 means the request was successful
-        if quote.status_code != 200:
-            print("Undesirable response from Alpaca! {}".format(quote.json()))
+            if quote.status_code != 200:
+                print("Undesirable response from Alpaca! {}".format(quote.json()))
             return False
     except Exception as e:
         print("There was an issue getting trade quote from Alpaca: {0}".format(e))
