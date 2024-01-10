@@ -73,20 +73,20 @@ async def check_arb():
 
     # when BTC/USD is cheaper
     if DIV > ETHBTC * (1 + min_arb_percent/100):
-        order1 = post_Alpaca_order("BTCUSD", BUY_BTC, "buy")
+        order1 = post_alpaca_order("BTCUSD", BUY_BTC, "buy")
         if order1.status_code == 200:
-            order2 = post_Alpaca_order("ETH/BTC", BUY_ETHBTC, "buy")
+            order2 = post_alpaca_order("ETH/BTC", BUY_ETHBTC, "buy")
             if order2.status_code == 200:
-                order3 = post_Alpaca_order("ETHUSD", BUY_ETHBTC, "sell")
+                order3 = post_alpaca_order("ETHUSD", BUY_ETHBTC, "sell")
                 if order3.status_code == 200:
                     print("Done (type 1) eth: {} btc: {} ethbtc {}".format(ETH, BTC, ETHBTC))
                     print("Spread: +{}".format(spread * 100))
                 else:
-                    post_Alpaca_order("ETH/BTC", BUY_ETHBTC, "sell")
+                    post_alpaca_order("ETH/BTC", BUY_ETHBTC, "sell")
                     print("Bad Order 3")
                     exit()
             else:
-                post_Alpaca_order("BTCUSD", BUY_BTC, "sell")
+                post_alpaca_order("BTCUSD", BUY_BTC, "sell")
                 print("Bad Order 2")
                 exit()
         else:
@@ -95,20 +95,20 @@ async def check_arb():
  
     # when ETH/USD is cheaper
     elif DIV < ETHBTC * (1 - min_arb_percent/100):
-        order1 = post_Alpaca_order("ETHUSD", BUY_ETH, "buy")
+        order1 = post_alpaca_order("ETHUSD", BUY_ETH, "buy")
         if order1.status_code == 200:
-            order2 = post_Alpaca_order("ETHBTC", BUY_ETH, "sell")
+            order2 = post_alpaca_order("ETHBTC", BUY_ETH, "sell")
             if order2.status_code == 200:
-                order3 = post_Alpaca_order("BTCUSD", SELL_ETHBTC, "sell")
+                order3 = post_alpaca_order("BTCUSD", SELL_ETHBTC, "sell")
                 if order3.status_code == 200:
                     print("Done (type 2) eth: {} btc: {} ethbtc {}".format(ETH, BTC, ETHBTC))
                     print("Spread: -{}".format(spread * 100))
                 else:
-                    post_Alpaca_order("ETH/BTC", SELL_ETHBTC, "buy")  
+                    post_alpaca_order("ETH/BTC", SELL_ETHBTC, "buy")  
                     print("Bad Order 3")                
                     exit()
             else:
-                post_Alpaca_order("ETHUSD", BUY_ETH, "sell")
+                post_alpaca_order("ETHUSD", BUY_ETH, "sell")
                 print("Bad Order 2")
                 exit()    
         else:
