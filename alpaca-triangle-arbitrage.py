@@ -14,9 +14,9 @@ waitTime = 3
 min_arb_percent = 0.3
 
 prices = {
-    'SOL/USD': 0,
+    'ETH/USD': 0,
     'BTC/USD': 0,
-    'SOL/BTC': 0
+    'ETH/BTC': 0
 }
 
 spreads = []
@@ -28,11 +28,9 @@ async def get_quote(symbol: str):
     '''
 
     try:
-        # make the request
             quote = requests.get(
                 '{0}/v1beta3/crypto/us/latest/orderbooks?symbols={1}'.format(DATA_URL, symbol), headers=HEADERS)
             prices[symbol] = quote.json()['orderbooks'][symbol]['a'][0]['p']
-        # Status code 200 means the request was successful
             if quote.status_code != 200:
                 print("Undesirable response from Alpaca! {}".format(quote.json()))
             return False
@@ -99,7 +97,7 @@ async def check_arb():
     elif DIV < ETHBTC * (1 - min_arb_percent/100):
         order1 = post_Alpaca_order("ETHUSD", BUY_ETH, "buy")
         if order1.status_code == 200:
-            order2 = post_Alpaca_order("ETH/BTC", BUY_ETH, "sell")
+            order2 = post_Alpaca_order("ETHBTC", BUY_ETH, "sell")
             if order2.status_code == 200:
                 order3 = post_Alpaca_order("BTCUSD", SELL_ETHBTC, "sell")
                 if order3.status_code == 200:
