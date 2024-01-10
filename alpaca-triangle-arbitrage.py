@@ -2,22 +2,24 @@ import alpaca_trade_api as alpaca
 import requests
 import asyncio
 
-HEADERS = {'APCA-API-KEY-ID': 'AKYMZMYECGXN0O0RQGZ6',
-           'APCA-API-SECRET-KEY': 'ZiVOJ4k3u2NSiKF5BSl3R86UOJ65XdlEr1Wcl5pl'}
+HEADERS = {'APCA-API-KEY-ID': 'PKC7ZL1YUV6X4FNQYBGB',
+           'APCA-API-SECRET-KEY': '5fuIAYOaWqRKmptS0qmchBLmCnim8KxY8DNtaPHx'}
 
 ALPACA_BASE_URL = 'https://paper-api.alpaca.markets'
 DATA_URL = 'https://data.alpaca.markets'
-rest_api = alpaca.REST('AKYMZMYECGXN0O0RQGZ6', 'ZiVOJ4k3u2NSiKF5BSl3R86UOJ65XdlEr1Wcl5pl', ALPACA_BASE_URL)
+rest_api = alpaca.REST('PKC7ZL1YUV6X4FNQYBGB', '5fuIAYOaWqRKmptS0qmchBLmCnim8KxY8DNtaPHx', ALPACA_BASE_URL)
 
 
 waitTime = 3
 min_arb_percent = 0.3
 
 prices = {
-    'ETH/USD': 0,
+    'SOL/USD': 0,
     'BTC/USD': 0,
-    'ETH/BTC': 0
+    'SOL/BTC': 0
 }
+
+spreads = []
 
 
 async def get_quote(symbol: str):
@@ -28,8 +30,8 @@ async def get_quote(symbol: str):
     try:
         # make the request
             quote = requests.get(
-                '{0}/v1beta2/crypto/latest/trades?symbols={1}'.format(DATA_URL, symbol), headers=HEADERS)
-            prices[symbol] = quote.json()['trades'][symbol]['p']
+                '{0}/v1beta3/crypto/us/latest/orderbooks?symbols={1}'.format(DATA_URL, symbol), headers=HEADERS)
+            prices[symbol] = quote.json()['orderbooks'][symbol]['a'][0]['p']
         # Status code 200 means the request was successful
             if quote.status_code != 200:
                 print("Undesirable response from Alpaca! {}".format(quote.json()))
@@ -118,10 +120,6 @@ async def check_arb():
         print("No arb opportunity, spread: {}".format(spread * 100))
         spreads.append(spread)
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
-loop.close()
-
 async def main():
         while True:
             task1 = loop.create_task(get_quote("ETH/USD"))
@@ -132,3 +130,9 @@ async def main():
             await check_arb()
             # # Wait for the value of waitTime between each quote request
             await asyncio.sleep(waitTime)
+
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())
+loop.close()
+
